@@ -1,4 +1,4 @@
-chmod 777 gradlew
+RUN chmod 777 gradlew
 RUN ./gradlew clean build --no-daemon 
 
 FROM openjdk:8-jre-slim
