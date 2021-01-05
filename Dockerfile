@@ -1,7 +1,7 @@
 FROM gradle:4.7.0-jdk8-alpine AS build
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
-RUN ./gradlew clean build --no-daemon 
+RUN ./gradlew.sh clean build --no-daemon 
 
 FROM openjdk:8-jre-slim
 
