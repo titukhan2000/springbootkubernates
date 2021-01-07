@@ -14,7 +14,7 @@ steps:
     title: Building Docker Image
     stage: build
     type: build
-    image_name: springbootkubernates-1.0
+    image_name: devilsdocker
     working_directory: ./
     tag: 'multi-stage'
     dockerfile: Dockerfile
