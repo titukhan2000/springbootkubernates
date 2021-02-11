@@ -17,7 +17,7 @@ steps:
     dockerfile: Dockerfile  
   sonarqube:
     type: "sonar-scanner-cli"
-    stage: "scan"
+    stage: "build"
     arguments:
       SONAR_HOST_URL: 'https://sonarcloud.io/' # replace with your host url
       SONAR_LOGIN: "828ec9c817d4b6704b2d06c0ad55b86eb6308cac" # replace with your access token
@@ -51,5 +51,4 @@ steps:
 stages:
   - clone
   - build
-  - scan
   - push
