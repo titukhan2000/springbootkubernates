@@ -6,16 +6,15 @@ steps:
     repo: 'https://github.com/titukhan2000/springbootkubernates'
     revision: main
     stage: clone
-  run_sonarqube:
-    title: Run SonarQube Analysis
-    stage: sonar
-    image: 'newtmitch/sonar-scanner'
-    environment:
-    - SONAR_TOKEN="828ec9c817d4b6704b2d06c0ad55b86eb6308cac"
-    - SONAR_HOST_URL='https://sonarcloud.io/' 
-    commands:
-      - cd src
-      - sonar-scanner  
+  sonarqube:
+    type: "sonar-scanner-cli"
+    stage: "build"
+    arguments:
+      SONAR_HOST_URL: 'https://sonarcloud.io/' # replace with your host url
+      SONAR_LOGIN: "828ec9c817d4b6704b2d06c0ad55b86eb6308cac" # replace with your access token
+      SONAR_PROJECT_BASE_DIR: '/codefresh/volume/springbootkubernates' #replace with your working directory
+      SONAR_SCANNER_CLI_VERSION: "latest"
+    commands
   build_my_app:
     title: springboot image
     type: build
