@@ -6,14 +6,6 @@ steps:
     repo: 'https://github.com/titukhan2000/springbootkubernates'
     revision: main
     stage: clone
-  sonarqube:
-    type: "sonar-scanner-cli"
-    stage: "push"
-    arguments:
-      SONAR_HOST_URL: 'https://sonarcloud.io/' # replace with your host url
-      SONAR_LOGIN: "828ec9c817d4b6704b2d06c0ad55b86eb6308cac" # replace with your access token
-      SONAR_PROJECT_BASE_DIR: '${{clone}}' #r eplace with your working directory
-      SONAR_SCANNER_CLI_VERSION: "latest"
   build_my_app:
     title: springboot image
     type: build
@@ -23,6 +15,14 @@ steps:
     tag: master
     disable_push: true
     dockerfile: Dockerfile  
+  sonarqube:
+    type: "sonar-scanner-cli"
+    stage: "scan"
+    arguments:
+      SONAR_HOST_URL: 'https://sonarcloud.io/' # replace with your host url
+      SONAR_LOGIN: "828ec9c817d4b6704b2d06c0ad55b86eb6308cac" # replace with your access token
+      SONAR_PROJECT_BASE_DIR: '${{clone}}' #r eplace with your working directory
+      SONAR_SCANNER_CLI_VERSION: "latest"
   push_to_my_registry:
     type: parallel
     stage: push
@@ -51,4 +51,5 @@ steps:
 stages:
   - clone
   - build
+  - scan
   - push
