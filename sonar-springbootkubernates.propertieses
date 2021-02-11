@@ -1,0 +1,4 @@
+sonar.projectKey=kubernates-rsgovindarajan
+ 
+# organization name
+sonar.organization=rsgovindarajanTechs
