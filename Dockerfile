@@ -11,7 +11,7 @@ FROM openjdk:8-jre-slim
 EXPOSE 8080
 
 RUN mkdir /app
-WORKDIR /home/gradle/src/build/libs/
+WORKDIR /home/gradle/src
 RUN ls -ltr
 
 COPY --from=build /home/gradle/src/build/libs/booking-pds-service-local.jar /app/spring-boot-application.jar
