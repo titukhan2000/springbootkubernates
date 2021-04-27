@@ -13,6 +13,7 @@ plugins {
  sonarqube {
         properties {
             property "sonar.sources", "src"
+	    property "sonar.sourceEncoding", "UTF-8"
         }
     }
 
@@ -28,6 +29,7 @@ sourceCompatibility = '1.8'
 repositories {
 	
  mavenCentral()
+ jcenter()
 	
  maven { 
   url 'https://repo.spring.io/milestone' 
