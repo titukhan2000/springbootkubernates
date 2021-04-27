@@ -17,6 +17,8 @@ plugins {
 	    property "sonar.host.url", "https://sonarcloud.io"
 	    property "sonar.login", "828ec9c817d4b6704b2d06c0ad55b86eb6308cac"
 	    property "sonar.organization", "titukhan2000"
+	    property "sonar.projectName", "Example of SonarQube Scanner for Gradle Usage"
+	    property "sonar.exclusions", "**/*KubernatesbootApplicationTests.java"
         }
     }
 
