@@ -4,7 +4,7 @@ WORKDIR /home/gradle/src
 RUN ls -ltr
 
 RUN chmod 777 gradlew
-RUN ./gradlew clean build --no-daemon 
+RUN ./gradlew clean build sonarqube --no-daemon 
 
 FROM openjdk:8-jre-slim
 
