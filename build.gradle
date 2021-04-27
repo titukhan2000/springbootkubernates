@@ -6,7 +6,16 @@ plugins {
 	
   id 'java'
 
+  id "org.sonarqube" version "3.1.1"
+
+
  }
+ sonarqube {
+        properties {
+            property "sonar.sources", "src"
+        }
+    }
+
 
 
 group = 'com.test.kubernates'
