@@ -1,4 +1,5 @@
-FROM gradle:4.7.0-11-alpine AS build
+#FROM gradle:4.7.0-11-alpine AS build
+FROM gradle:4.7.0-jdk-11.0.10_9-alpine AS build
 COPY --chown=gradle:gradle . /home/gradle/src
 WORKDIR /home/gradle/src
 RUN ls -ltr
@@ -6,7 +7,7 @@ RUN ls -ltr
 RUN chmod 777 gradlew
 RUN ./gradlew clean build sonarqube --no-daemon 
 
-FROM openjdk:11-jre-slim
+FROM adoptopenjdk:jre-11.0.10_9-alpine
 
 EXPOSE 8080
 
