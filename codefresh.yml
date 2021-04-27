@@ -6,19 +6,6 @@ steps:
     repo: 'https://github.com/titukhan2000/springbootkubernates'
     revision: main
     stage: clone
-  run_sonarqube:
-    title: Run SonarQube Analysis
-    stage: sonar
-    image: 'newtmitch/sonar-scanner'
-    environment:
-    - SONAR_HOST_URL: 'https://sonarcloud.io/' # replace with your host url
-    - SONAR_LOGIN: "828ec9c817d4b6704b2d06c0ad55b86eb6308cac" # replace with your access token
-    - SONAR_PROJECT_BASE_DIR: '/codefresh/volume/springbootkubernates' #replace with your working directory
-    - SONAR_SCANNER_CLI_VERSION: "latest"
-    commands:
-      - cd src
-      - ls -ltr
-      - sonar-scanner    
   build_my_app:
     title: springboot image
     type: build
@@ -36,25 +23,24 @@ steps:
         type: push
         title: Pushing to a registry
         candidate: '${{build_my_app}}'
-        tag: v1.0.6
+        tag: v1.0.7
         registry: CodeFreshRegistry
         image_name: devilsdocker/codefreshdemo
       pushing_to_jfrog_bintray:
         type: push
         title: Pushing to a jfrog bintray
         candidate: '${{build_my_app}}'
-        tag: v1.0.6
+        tag: v1.0.7
         registry: JFrogBintray
         image_name: jfrogcodefreshpackdemo
       pushing_to_jfrog:
         type: push
         title: Pushing to a jfrog
         candidate: '${{build_my_app}}'
-        tag: v1.0.6
+        tag: v1.0.7
         registry: JFrogRegistry
         image_name: codefreshjfrog/jfrogdocker
 stages:
   - clone
-  - sonar
   - build
   - push
