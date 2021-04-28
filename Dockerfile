@@ -7,7 +7,8 @@ RUN ls -ltr
 RUN chmod 777 gradlew
 RUN ./gradlew clean build sonarqube --no-daemon 
 
-FROM adoptopenjdk:11-jre-openj9
+#FROM adoptopenjdk:11-jre-openj9
+FROM openjdk:8-jre-slim
 
 EXPOSE 8080
 
