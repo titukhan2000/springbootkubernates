@@ -1,0 +1,54 @@
+# More examples of Codefresh YAML can be found at
+# https://codefresh.io/docs/docs/yaml-examples/examples/
+
+version: "1.0"
+# Stages can help you organize your steps in stages
+stages:
+  - "clone"
+  - "build"
+  - "copy_to_shared_volume"
+  - "shared-volume"
+# When clone step name is not main_clone, then git-clone downloads the content to /codefresh/volume/springkubernetes. But the working folder remains to be 
+# /codefresh/volume. To point to  /codefresh/volume/springkubernetes in any other step, we have to use ./springkubernetes or '${{clone}}'
+steps:
+  clone:
+    title: Cloning repository
+    type: git-clone
+    repo: 'https://github.com/titukhan2000/springbootkubernates'
+    revision: main
+    stage: clone
+  PrintFileList:
+    title: 'Listing files'
+    stage: clone
+    image: alpine:latest
+    commands:
+     - 'ls -l'
+  build:
+    title: "Building Docker image"
+    type: "build"
+    image_name: "titukhan2000/springbootkubernates"
+    working_directory: "${{clone}}"
+    tag: "${{CF_BRANCH_TAG_NORMALIZED}}"
+    dockerfile: "Dockerfile"
+    disable_push: true
+    stage: "build"
+
+  copy_to_shared_volume:
+    title: "Copy file to shared volume"
+    type: "freestyle" 
+    image: alpine:3.9 
+    working_directory: "${{clone}}"
+    commands:
+      - ls -l /codefresh/volume/
+      - cp ./artifact.example /codefresh/volume/artifact.example
+    stage: "shared-volume"
+  list_shared_volume:
+    title: "List shared volume files"
+    type: "freestyle" 
+    image: alpine:3.9 
+    working_directory: "${{clone}}"
+    commands:
+      - pwd
+      - ls -l /codefresh/volume
+    stage: "shared-volume"
+
