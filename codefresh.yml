@@ -1,46 +1,91 @@
-version: '1.0'
+# More examples of Codefresh YAML can be found at
+# https://codefresh.io/docs/docs/yaml-examples/examples/
+
+version: "1.0"
+# Stages can help you organize your steps in stages
+stages:
+  - "clone"
+  - "build"
+  - "sonar"
+  - "copy_to_shared_volume"
+  - "shared-volume"
+  - "push"
+
 steps:
   clone:
     title: Cloning repository
     type: git-clone
     repo: 'https://github.com/titukhan2000/springbootkubernates'
     revision: main
+    stage: clone     
+  PrintFileList:
+    title: 'Listing files'
     stage: clone
-  build_my_app:
-    title: springboot image
-    type: build
-    stage: build
-    image_name: springbootnew
-    working_directory: '${{clone}}'
-    tag: master
+    image: alpine:latest
+    commands:
+     - echo "${{CF_BUILD_ID}}"
+     - 'ls -l'
+    when:
+      condition:
+        all:
+         myCondition: clone.result == 'success'
+  build:
+    title: "Building Docker image"
+    type: "build"
+    image_name: "titukhan2000/springbootkubernates"
+    working_directory: "${{clone}}"
+    tag: ${{CF_BRANCH_TAG_NORMALIZED}}-${{CF_SHORT_REVISION}}
+    dockerfile: "Dockerfile"
     disable_push: true
-    dockerfile: Dockerfile  
-  push_to_my_registry:
-    type: parallel
+    stage: "build"
+    when:
+      condition:
+       any:
+         myCondition: clone.result == 'success'
+         ifLengthisfour: length("${{CF_BRANCH}}")==3
+  copy_to_shared_volume:
+    title: "Copy file to shared volume"
+    type: "freestyle" 
+    image: alpine:3.9 
+    working_directory: "${{clone}}"
+    commands:
+      - ls -l /codefresh/volume/
+      - cp ./artifact.example /codefresh/volume/artifact.example
+    stage: "shared-volume"
+  list_shared_volume:
+    title: "List shared volume files"
+    type: "freestyle" 
+    image: alpine:3.9 
+    working_directory: "${{clone}}"
+    commands:
+      - pwd
+      - ls -l /codefresh/volume
+    stage: "shared-volume"
+  sonarqube:
+     title: "SonarQube validations"
+     type: "freestyle"
+     stage: "sonar"
+     image: gradle:4.7.0-jdk8-alpine
+     working_directory: "${{clone}}"
+     commands:
+        - ls -ltr
+        - chmod 777 gradlew
+        - ./gradlew clean build sonarqube --no-daemon
+     when:
+          branch:
+            only:
+            - master
+  approve_existing_version_update:
+    type: pending-approval
     stage: push
-    steps:
-      pushing_to_docker:
-        type: push
-        title: Pushing to a registry
-        candidate: '${{build_my_app}}'
-        tag: v1.0.7
-        registry: CodeFreshRegistry
-        image_name: devilsdocker/codefreshdemo
-      pushing_to_jfrog_bintray:
-        type: push
-        title: Pushing to a jfrog bintray
-        candidate: '${{build_my_app}}'
-        tag: v1.0.7
-        registry: JFrogBintray
-        image_name: jfrogcodefreshpackdemo
-      pushing_to_jfrog:
-        type: push
-        title: Pushing to a jfrog
-        candidate: '${{build_my_app}}'
-        tag: v1.0.7
-        registry: JFrogRegistry
-        image_name: codefreshjfrog/jfrogdocker
-stages:
-  - clone
-  - build
-  - push
+    title: "Are you sure you want to update already existing image version?"
+    description: |
+       "Used for reverting changes without raising the service version"
+    when:
+      branch:
+        only: 
+         - main
+      steps:
+       - name: copy_to_shared_volume
+         on:
+           - success
