@@ -89,3 +89,14 @@ steps:
        - name: copy_to_shared_volume
          on:
            - success
+push_to_my_registry:
+    type: parallel
+    stage: push
+    steps:
+      pushing_to_docker:
+        type: push
+        title: Pushing to a registry
+        candidate: '${{build}}'
+        tag: v1.0.6
+        registry: CodeFreshRegistry
+        image_name: devilsdocker/codefreshdemo
